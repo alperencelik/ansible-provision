@@ -1,6 +1,6 @@
   - name: Change the hostname
     hostname:
-      name: {{ hostname }}
+      name: "{{ hostname }}"
 
   - name: Install nagios via script
     shell: curl https://assets.nagios.com/downloads/nagiosxi/install.sh | sh 
