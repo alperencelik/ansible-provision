@@ -1,0 +1,28 @@
+---
+- hosts: gitlab
+  roles:
+    - role: gitlab
+
+- hosts: kubernetes
+  roles:
+    - role: kubernetes-common
+
+- hosts: kubernetes-master
+  roles:
+    - role: kubernetes-master
+
+- hosts: kubernetes-worker
+  roles:
+    - role: kubernetes-worker
+
+- hosts: gitlab-runners
+  roles:
+    - role: kubernetes-common
+
+- hosts: gitlab-runner-master
+  roles:
+    - role: kubernetes-master
+
+- hosts: gitlab-runner-worker
+  roles:   
+    - role: kubernetes-worker

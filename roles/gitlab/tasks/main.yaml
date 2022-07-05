@@ -1,0 +1,36 @@
+
+  - name: Change the hostname
+    hostname: 
+      name: gitlab
+
+  - name: Install needed packages
+    yum:
+      name: "{{ packages }}"
+    vars:
+      packages:
+        - curl 
+        - policycoreutils-python
+        - openssh-server
+        - perl
+        - postfix
+
+  - name: Enable postfix
+    systemd:
+      name: postfix
+      state: started
+      enabled: yes
+
+  - name: Install gitlab via script 
+    shell: curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.rpm.sh | sudo bash 
+
+  - name: Install gitlab
+    yum:
+      name: gitlab-ee
+
+  - name: Copy gitlab-config
+    template:
+      src: gitlab.j2
+      dest: /etc/gitlab/gitlab.rb
+    
+  - name: Restart gitlab
+    shell: gitlab-ctl reconfigure

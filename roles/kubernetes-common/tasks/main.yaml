@@ -1,0 +1,105 @@
+
+  - name: Add repo
+    get_url:
+      url: https://download.docker.com/linux/centos/docker-ce.repo
+      dest: /etc/yum.repos.d/docker-ce.repo
+      
+      
+  - name: Create file for modules to install
+    copy:
+      dest: /etc/modules-load.d/containerd.conf
+      content: |
+        overlay
+        br_netfilter
+   
+  - name: Add kernel modules 
+    modprobe:
+      name: "{{ item }}"
+      state: present
+    with_items:
+    - overlay
+    - br_netfilter
+    
+  - name: Create a file for kernel parameters
+    copy:
+      dest: /etc/sysctl.d/99-kubernetes-cri.conf
+      content: |
+        net.bridge.bridge-nf-call-iptables  = 1
+        net.ipv4.ip_forward                 = 1
+        net.bridge.bridge-nf-call-ip6tables = 1
+  
+  - name: Load kernel parameters
+    shell: sysctl --system
+
+  - name: Install containerd
+    yum:
+      name: containerd.io
+      state: present
+      
+  - name: Copy containerd.config
+    copy:
+      src: config.toml
+      dest: /etc/containerd/config.toml
+      
+  - name: Enable service containerd
+    systemd:
+      name: containerd
+      enabled: yes     
+      state: started
+
+  - name: Download nerdctl
+    get_url:
+      url: https://github.com/containerd/nerdctl/releases/download/v0.16.1/nerdctl-0.16.1-linux-amd64.tar.gz
+      dest: /tmp/nerdctl.tar.gz
+ 
+  - name: Extract nerdctl into /usr/local/bin
+    unarchive:
+      src: /tmp/nerdctl.tar.gz
+      dest: /usr/local/bin
+      remote_src: yes
+
+  - name: Remove swapfile from /etc/fstab
+    mount:
+      name: "{{ item }}"
+      fstype: swap
+      state: absent
+    with_items:
+      - swap
+      - none
+  
+  - name: Stop firewalld
+    systemd:
+      name: firewalld
+      state: stopped
+      
+  - name: Copy kubernetes repo
+    copy:
+      src: kubernetes.repo
+      dest: /etc/yum.repos.d/kubernetes.repo
+
+  - name: Disabling SELinux state
+    selinux:
+      state: disabled
+    register: selinux_status
+    
+  - name: Reboot if selinux tag changes
+    reboot:
+      reboot_timeout: 3600
+    when: selinux_status is changed
+       
+  - name: Install kube packages
+    yum:
+      name: "{{ packages }}"
+    vars:
+      packages:
+        - kubelet-{{ kube_version }}
+        - kubeadm-{{ kube_version }}
+        - kubectl
+      state: present
+
+  - name: Enable kubelet
+    systemd:
+      name: kubelet
+      state: started
+      enabled: yes
+

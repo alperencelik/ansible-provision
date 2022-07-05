@@ -1,0 +1,55 @@
+
+  - name: Change the hostname
+    hostname: 
+      name: "{{ hostname }}"
+
+  - name: Check port 6443
+    shell: ss -tulnp | grep 6443
+    register: port
+    ignore_errors: true
+
+  - name: Start cluster by kubeadm
+    shell: kubeadm init --pod-network-cidr=192.168.0.0/16 # --kubernetes-version=v{{ kube_version }}
+    when: port.stdout == ""
+    register: init_cluster
+
+  - name: Add a line to a file 
+    ansible.builtin.lineinfile:
+      path: /etc/environment
+      line: KUBECONFIG="/etc/kubernetes/admin.conf"
+   
+  - name: Export kubeconfig to create resources
+    shell: export KUBECONFIG="/etc/kubernetes/admin.conf"
+    
+  - name: Start cluster by kubeadm
+    shell: kubectl create -f https://projectcalico.docs.tigera.io/manifests/tigera-operator.yaml && kubectl create -f https://projectcalico.docs.tigera.io/manifests/custom-resources.yaml
+    when: init_cluster is not skipped
+
+  - name: Generate join command
+    shell: kubeadm token create --print-join-command > /tmp/kubeadm-join.sh
+    register: kubeadm_join
+
+  - name: Fetch join.sh ( copy from master to ansible host)
+    fetch:
+      src: /tmp/kubeadm-join.sh
+      dest: /tmp/kubeadm-join.sh
+      flat: yes
+  
+  - name: Install bashcompletion
+    yum:
+      name: bash-completion
+      state: present
+
+
+  - name: Edit .bashrc
+    blockinfile: 
+      state: present
+      insertafter: EOF
+      dest: /root/.bashrc
+      content: |
+        alias k=kubectl
+        complete -F __start_kubectl k
+
+        
+
+

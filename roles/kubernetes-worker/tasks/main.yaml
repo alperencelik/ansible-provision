@@ -1,0 +1,34 @@
+
+    - name: Change the hostname
+      hostname: 
+        name: "{{ hostname }}"
+
+    - name: check if join.sh exists
+      stat: 
+        path: /tmp/kubeadm-join.sh
+      register: kelsey
+  
+    - name: Copy kubeadm_join command
+      copy:
+        src: /tmp/kubeadm-join.sh
+        dest: /tmp/kubeadm-join.sh
+      when: kelsey.stat.exists == false
+
+    - name: Join the node to cluster
+      command: sh /tmp/kubeadm-join.sh
+      when: kelsey.stat.exists == false
+
+    - name: Copy nginx-proxy
+      copy:
+        src: nginx-proxy.yaml
+        dest: /etc/kubernetes/manifests/nginx-proxy.yaml
+
+    - name: Creates nginx directory
+      file:
+        path: /etc/nginx
+        state: directory
+
+    - name: Copy nginx-conf
+      template:
+        src: nginx-conf.j2
+        dest: /etc/nginx/nginx.conf

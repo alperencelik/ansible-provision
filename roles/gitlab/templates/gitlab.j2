@@ -1,0 +1,42 @@
+external_url 'http://{{ ansible_ssh_host }}'
+
+### SMTP
+
+
+################################################################################
+## Container Registry settings
+##! Docs: https://docs.gitlab.com/ee/administration/container_registry.html
+################################################################################
+
+# registry_external_url 'http://10.0.0.102:5050'
+# 
+# ### Registry backend storage
+# 
+# 
+# registry['storage'] = {
+#   's3' => {
+#     'accesskey' => 'gitlab',
+#     'secretkey' => 'miniogitlab',
+#     'bucket' => 'gitlab-registry-storage',
+#     'region' => 'us-east-1',
+#     'regionendpoint' => 'http://10.0.0.103:9199',
+#     'v4auth' => true,
+#     'pathstyle' => true
+#   }
+# }
+
+################################################################################
+## GitLab NGINX
+##! Docs: https://docs.gitlab.com/omnibus/settings/nginx.html
+################################################################################
+
+# nginx['enable'] = true
+# nginx['client_max_body_size'] = '250m'
+#nginx['redirect_http_to_https'] = true
+# nginx['redirect_http_to_https_port'] = 80
+
+
+################################################################################
+# Let's Encrypt integration
+################################################################################
+#letsencrypt['enable'] = false

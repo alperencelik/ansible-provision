@@ -1,0 +1,32 @@
+[gitlab]
+gitlab ansible_user=root ansible_host=10.0.0.18 hostname=gitlab
+
+[kubernetes]
+
+kubernetes-master-1 ansible_user=root ansible_host=10.0.0.22 hostname=kubernetes-master-1
+kubernetes-worker-1 ansible_user=root ansible_host=10.0.0.14 hostname=kubernetes-worker-1   
+kubernetes-worker-2 ansible_user=root ansible_host=10.0.0.15 hostname=kubernetes-worker-2
+kubernetes-worker-3 ansible_user=root ansible_host=10.0.0.17 hostname=kubernetes-worker-3
+
+[kubernetes-master]
+
+kubernetes-master-1 ansible_user=root ansible_host=10.0.0.22 hostname=kubernetes-master-1
+
+[kubernetes-worker]
+
+kubernetes-worker-1 ansible_user=root ansible_host=10.0.0.14 hostname=kubernetes-worker-1
+kubernetes-worker-2 ansible_user=root ansible_host=10.0.0.15 hostname=kubernetes-worker-2
+kubernetes-worker-3 ansible_user=root ansible_host=10.0.0.17 hostname=kubernetes-worker-3
+
+[gitlab-runners]
+
+gitlab-runner-master ansible_user=root ansible_host=10.0.0.12 hostname=gitlab-runner-master
+gitlab-runner-worker ansible_user=root ansible_host=10.0.0.19 hostname=gitlab-runner-worker
+
+[gitlab-master]
+
+gitlab-runner-master ansible_user=root ansible_host=10.0.0.12 hostname=gitlab-runner-master
+
+[gitlab-worker]
+
+gitlab-runner-worker ansible_user=root ansible_host=10.0.0.19 hostname=gitlab-runner-worker
