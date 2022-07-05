@@ -1,0 +1,31 @@
+
+  - name: Change the hostname
+    hostname:
+      name: "{{ hostname }}"
+
+
+  - name: Get docker sh
+    get_url:
+      url: https://get.docker.com/
+      dest: /tmp/get-docker.sh
+
+  - name: Give execute permission
+    file:
+      path: /tmp/get-docker.sh
+      owner: root
+      group: root
+      mode: '1777'
+
+  - name: Run script
+    shell: bash /tmp/get-docker.sh
+
+  - name: Enable docker
+    systemd: 
+      state: enabled
+      name: docker
+
+  - name:
+    systemd:
+      state: started
+      name: docker
+    

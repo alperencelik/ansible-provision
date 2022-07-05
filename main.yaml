@@ -1,4 +1,9 @@
 ---
+
+- hosts: docker-host
+  roles: 
+    - role: docker-host
+
 - hosts: gitlab
   roles:
     - role: gitlab
