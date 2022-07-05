@@ -24,3 +24,10 @@
       state: started
       name: docker
 
+  - name: Create minio data dir
+    file:
+      path: /minio/data
+      state: directory
+
+  - name: Run minio container
+    shell: docker run -td -p 9000:9000 -p 9001:9001 --name minio-container -v /minio/data:/data quay.io/minio/minio server /data --console-address ":9001"
