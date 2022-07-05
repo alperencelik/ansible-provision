@@ -2,8 +2,12 @@
 
 docker-host ansible_user=root ansible_host=10.0.0.20 hostname=docker-host
 
+[nagios]
+
+nagios ansibl_user=root ansible_host=10.0.0.21 hostname=nagios
 
 [gitlab]
+
 gitlab ansible_user=root ansible_host=10.0.0.18 hostname=gitlab
 
 [kubernetes]

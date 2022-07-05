@@ -4,6 +4,10 @@
   roles: 
     - role: docker-host
 
+- hosts: nagios
+  roles:
+    - role: nagios
+
 - hosts: gitlab
   roles:
     - role: gitlab
