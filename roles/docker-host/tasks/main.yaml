@@ -21,11 +21,6 @@
 
   - name: Enable docker
     systemd: 
-      state: enabled
-      name: docker
-
-  - name:
-    systemd:
       state: started
       name: docker
-    
+
