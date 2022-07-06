@@ -3,6 +3,10 @@
     hostname:
       name: "{{ hostname }}"
 
+  - name: Check docker
+    command: docker --version
+    register: docker_exists
+    ignore_errors: yes
 
   - name: Get docker sh
     get_url:
@@ -15,9 +19,11 @@
       owner: root
       group: root
       mode: '1777'
+    
 
   - name: Run script
     shell: bash /tmp/get-docker.sh
+    when: docker_exists.failed
 
   - name: Enable docker
     systemd: 
@@ -29,5 +35,11 @@
       path: /minio/data
       state: directory
 
+  - name: Check minio is running
+    shell: docker ps | grep minio
+    register: minio_running
+    ignore_errors: yes
+
   - name: Run minio container
     shell: docker run -td -p 9000:9000 -p 9001:9001 --name minio-container -v /minio/data:/data quay.io/minio/minio server /data --console-address ":9001"
+    when: minio_running.stdout == ""
