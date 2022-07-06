@@ -20,8 +20,14 @@
       state: started
       enabled: yes
 
+  - name: Check if gitlab installed
+    shell: cat /etc/gitlab/gitlab.rb
+    register: gitlab_installed
+    ignore_errors: yes    
+
   - name: Install gitlab via script 
     shell: curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.rpm.sh | sudo bash 
+    when: gitlab_installed.stdout == ""
 
   - name: Install gitlab
     yum:
@@ -34,3 +40,5 @@
     
   - name: Restart gitlab
     shell: gitlab-ctl reconfigure
+    async: 1000
+    poll: 0
