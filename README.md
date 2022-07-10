@@ -1,6 +1,6 @@
 # Provision your infrastructure
 
-The repository contains some Ansible roles to deploy on freshly created vm's to play on Homelabç
+The repository contains some Ansible roles to deploy on freshly created vm's to play on Homelab.
 
 </br>
 
