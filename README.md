@@ -25,8 +25,9 @@ The repository contains some Ansible roles to deploy on freshly created vm's to 
 
 3. Copy ssh key to VM's 
 
-    If you have same password for the all vm's you can use the ***ssh-key-copier*** script to copy the key.
-    
+    If you have same password for the all vm's
+    - you can use the ***ssh-key-copier*** script to copy the key.
+    - or you can use ***--ask-pass*** argument for ansible.
 4. To create all infrastructure roles run the playbook.
 
     `ansible-playbook main.yaml`
